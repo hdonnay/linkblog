@@ -330,6 +330,8 @@ func rss(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 		return
 	}
+	etag, _ := ioutil.ReadFile(asset("rss.xml.etag"))
+	w.Header().Add("Etag", hex.EncodeToString(etag))
 	io.Copy(w, feed)
 	return
 }
@@ -340,6 +342,8 @@ func createRSS(f string) error {
 		return err
 	}
 	defer out.Close()
+	h := fnv.New64a()
+	w := io.MultiWriter(out, h)
 	rows, err := db.Query("SELECT hash, desc FROM links ORDER BY time DESC LIMIT ?;", *feedLimit)
 	if err != nil {
 		return err
@@ -347,7 +351,7 @@ func createRSS(f string) error {
 
 	items := make([]Item, 0, *feedLimit)
 	for rows.Next() {
-		i := Item{}
+		var i Item
 		var h string
 		err := rows.Scan(&h, &i.Description)
 		if err != nil {
@@ -363,8 +367,8 @@ func createRSS(f string) error {
 		i.Link = u.String()
 		items = append(items, i)
 	}
-	io.WriteString(out, xml.Header)
-	e := xml.NewEncoder(out)
+	io.WriteString(w, xml.Header)
+	e := xml.NewEncoder(w)
 	now := time.Now().UTC().Format(time.RFC822)
 	r := Rss{
 		Version: "2.0",
@@ -382,5 +386,6 @@ func createRSS(f string) error {
 	if err := e.Encode(r); err != nil {
 		return err
 	}
+	ioutil.WriteFile(f+".etag", h.Sum(nil), 0600)
 	return nil
 }
