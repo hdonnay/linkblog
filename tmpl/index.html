@@ -1,0 +1,5 @@
+{{template "header.html"}}
+<ul>{{range .}}
+<li>{{.Time.Format "2006-01-02"}}: <a href="/:/{{.Hash}}">{{.Desc}}</a></li>
+{{end}}</ul>
+{{template "footer.html"}}
