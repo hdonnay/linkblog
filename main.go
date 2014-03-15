@@ -75,6 +75,12 @@ type (
 		GUID        string `xml:"guid,omitempty"`
 		//PubDate     time.Time `xml:"pubDate"`
 	}
+
+	tmplArg struct {
+		Records chan record
+		Flash   string
+		Root    string
+	}
 )
 
 var (
@@ -170,6 +176,14 @@ func asset(f string) string {
 	return path.Join(assetDir, f)
 }
 
+func newArg(f string, c chan record) tmplArg {
+	return tmplArg{
+		Root:    *prettyAddr,
+		Flash:   f,
+		Records: c,
+	}
+}
+
 func fetch(w http.ResponseWriter, r *http.Request) {
 	var urlString string
 	err := db.QueryRow("SELECT url FROM links WHERE hash=?;", r.URL.Path).Scan(&urlString)
@@ -200,7 +214,7 @@ func adminAdd(w http.ResponseWriter, r *http.Request) {
 		}
 		if r.PostForm.Get("url") == "" || r.PostForm.Get("desc") == "" {
 			w.WriteHeader(http.StatusBadRequest)
-			err := tmpl.ExecuteTemplate(w, "add.html", "both fields are required")
+			err := tmpl.ExecuteTemplate(w, "add.html", newArg("both fields are required", nil))
 			if err != nil {
 				log.Println(err)
 			}
@@ -213,7 +227,7 @@ func adminAdd(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			if err.Error() == "column hash is not unique" {
 				w.WriteHeader(http.StatusConflict)
-				if err := tmpl.ExecuteTemplate(w, "add.html", "url already exists"); err != nil {
+				if err := tmpl.ExecuteTemplate(w, "add.html", newArg("url already exists", nil)); err != nil {
 					log.Println(err)
 				}
 				return
@@ -232,12 +246,12 @@ func adminAdd(w http.ResponseWriter, r *http.Request) {
 
 		// display
 		w.WriteHeader(http.StatusSeeOther)
-		err = tmpl.ExecuteTemplate(w, "added.html", h)
+		err = tmpl.ExecuteTemplate(w, "added.html", newArg(h, nil))
 		if err != nil {
 			log.Println(err)
 		}
 	case "GET":
-		err := tmpl.ExecuteTemplate(w, "add.html", nil)
+		err := tmpl.ExecuteTemplate(w, "add.html", newArg("", nil))
 		if err != nil {
 			log.Println(err)
 		}
@@ -273,7 +287,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 		}
 		close(c)
 	}()
-	err := tmpl.ExecuteTemplate(w, "index.html", c)
+	err := tmpl.ExecuteTemplate(w, "index.html", newArg("", c))
 	if err != nil {
 		log.Println(err)
 	}
@@ -300,7 +314,7 @@ func hits(w http.ResponseWriter, r *http.Request) {
 		}
 		close(c)
 	}()
-	err := tmpl.ExecuteTemplate(w, "hits.html", c)
+	err := tmpl.ExecuteTemplate(w, "hits.html", newArg("", c))
 	if err != nil {
 		log.Println(err)
 	}

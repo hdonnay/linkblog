@@ -1,8 +1,8 @@
 {{template "header.html"}}
 <p>These are links I've found interesting.</p>
-<p>An rss feed can be found <a href="/rss">here</a>. Most popular links can be seen <a href="/hits">here</a></p>
+<p>An rss feed can be found <a href="{{.Root}}/rss">here</a>. Most popular links can be seen <a href="{{.Root}}/hits">here</a></p>
 <hr>
-<ul>{{range .}}
+<ul>{{range .Records}}
 <li >{{.Time.Format "2006-01-02"}}: <a href="/:/{{.Hash}}" class="blue">{{.Desc}}</a></li>
 {{end}}</ul>
 {{template "footer.html"}}

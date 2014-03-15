@@ -1,5 +1,5 @@
 {{template "header.html"}}
-{{if .}}<h3>{{.}}</h3><hr>{{end}}
+{{if ne .Flash "" }}<h3>{{.Flash}}</h3><hr>{{end}}
 <h3>add things here</h3>
 <form method="post">
 URL: <input type="text" name="url">
