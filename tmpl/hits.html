@@ -1,5 +1,5 @@
-{{template "header.html"}}
+{{template "header.html" .}}
 <ul>{{range .Records}}
 <li>{{.Time.Format "2006-01-02"}}: <a href="/:/{{.Hash}}">{{.Desc}}</a> ({{.Hits}})</li>
 {{end}}</ul>
-{{template "footer.html"}}
+{{template "footer.html" .}}
