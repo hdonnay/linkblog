@@ -145,6 +145,9 @@ func init() {
 		log.Fatal(err)
 	}
 	root = path.Clean(u.Path)
+	if root == "." {
+		root = "/"
+	}
 }
 
 func main() {
@@ -172,7 +175,11 @@ func main() {
 	s.Handle("/:/", http.StripPrefix("/:/", http.HandlerFunc(fetch)))
 	s.Handle("/s/", http.StripPrefix("/s/", http.FileServer(http.Dir(asset("static")))))
 
-	http.Handle(root+"/", http.StripPrefix(root, s))
+	if root == "/" {
+		http.Handle(root, s)
+	} else {
+		http.Handle(root+"/", http.StripPrefix(root, s))
+	}
 
 	go func() {
 		log.Println("listening on " + *listen + ", serving at " + root)
