@@ -172,7 +172,7 @@ func main() {
 	s.Handle("/:/", http.StripPrefix("/:/", http.HandlerFunc(fetch)))
 	s.Handle("/s/", http.StripPrefix("/s/", http.FileServer(http.Dir(asset("static")))))
 
-	http.Handle(root+"/", s)
+	http.Handle(root+"/", http.StripPrefix(root, s))
 
 	go func() {
 		log.Println("listening on " + *listen + ", serving at " + root)
