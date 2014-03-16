@@ -87,6 +87,7 @@ var (
 	assetDir string
 	db       *sql.DB
 	tmpl     *template.Template
+	root     string
 
 	listen     = flag.String("l", "127.0.0.1:7990", "listen address")
 	dbFile     = flag.String("d", "linkblog.db", "sqlite db")
@@ -139,6 +140,11 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	u, err := url.Parse(*prettyAddr)
+	if err != nil {
+		log.Fatal(err)
+	}
+	root = u.Path
 }
 
 func main() {
@@ -158,15 +164,15 @@ func main() {
 		log.Fatal(err)
 	}
 
-	http.Handle("/", http.HandlerFunc(index))
-	http.Handle("/hits/", http.HandlerFunc(hits))
-	http.Handle("/admin/add/", http.HandlerFunc(adminAdd))
-	http.Handle("/rss/", http.HandlerFunc(rss))
-	http.Handle("/:/", http.StripPrefix("/:/", http.HandlerFunc(fetch)))
-	http.Handle("/s/", http.StripPrefix("/s/", http.FileServer(http.Dir(asset("static")))))
+	http.Handle(path.Join(root, "/"), http.HandlerFunc(index))
+	http.Handle(path.Join(root, "/hits/"), http.HandlerFunc(hits))
+	http.Handle(path.Join(root, "/admin/add/"), http.HandlerFunc(adminAdd))
+	http.Handle(path.Join(root, "/rss/"), http.HandlerFunc(rss))
+	http.Handle(path.Join(root, "/:/"), http.StripPrefix("/:/", http.HandlerFunc(fetch)))
+	http.Handle(path.Join(root, "/s/"), http.StripPrefix("/s/", http.FileServer(http.Dir(asset("static")))))
 
 	go func() {
-		log.Println("listening on " + *listen)
+		log.Println("listening on " + *listen + ", serving at " + root)
 		http.ListenAndServe(*listen, nil)
 	}()
 	<-term
