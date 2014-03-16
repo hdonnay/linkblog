@@ -1,14 +1,15 @@
 all: linkblog
 
-linkblog: build/exe build/static.zip
+linkblog: build build/exe build/static.zip
 	cat build/exe build/static.zip > linkblog
 	zip -A linkblog
 	chmod +x linkblog
 
-build/static.zip: build static/* tmpl/* static/style.css
+build/static.zip: static/* tmpl/*
 	zip -r build/static.zip static tmpl
 
-build/exe: *.go build
+build/exe: *.go
+	go get -d .
 	go build -o build/exe
 
 build:
