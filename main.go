@@ -144,7 +144,7 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	root = u.Path
+	root = path.Clean(u.Path)
 }
 
 func main() {
@@ -164,12 +164,15 @@ func main() {
 		log.Fatal(err)
 	}
 
-	http.Handle(path.Join(root, "/")+"/", http.HandlerFunc(index))
-	http.Handle(path.Join(root, "/hits")+"/", http.HandlerFunc(hits))
-	http.Handle(path.Join(root, "/admin/add")+"/", http.HandlerFunc(adminAdd))
-	http.Handle(path.Join(root, "/rss")+"/", http.HandlerFunc(rss))
-	http.Handle(path.Join(root, "/:")+"/", http.StripPrefix("/:/", http.HandlerFunc(fetch)))
-	http.Handle(path.Join(root, "/s")+"/", http.StripPrefix("/s/", http.FileServer(http.Dir(asset("static")))))
+	s := http.NewServeMux()
+	s.Handle("/", http.HandlerFunc(index))
+	s.Handle("/hits/", http.HandlerFunc(hits))
+	s.Handle("/admin/add/", http.HandlerFunc(adminAdd))
+	s.Handle("/rss/", http.HandlerFunc(rss))
+	s.Handle("/:/", http.StripPrefix("/:/", http.HandlerFunc(fetch)))
+	s.Handle("/s/", http.StripPrefix("/s/", http.FileServer(http.Dir(asset("static")))))
+
+	http.Handle(root+"/", s)
 
 	go func() {
 		log.Println("listening on " + *listen + ", serving at " + root)
