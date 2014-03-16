@@ -1,4 +1,4 @@
-{{template "header.html" .}}
+{{template "header.html" .Root}}
 {{$root := .Root}}
 <p>These are links I've found interesting.</p>
 <p>An rss feed can be found <a href="{{.Root}}/rss">here</a>. Most popular links can be seen <a href="{{.Root}}/hits">here</a></p>
@@ -6,4 +6,4 @@
 <ul>{{range .Records}}
 <li >{{.Time.Format "2006-01-02"}}: <a href="{{$root}}/:/{{.Hash}}" class="blue">{{.Desc}}</a></li>
 {{end}}</ul>
-{{template "footer.html" .}}
+{{template "footer.html" .Root}}

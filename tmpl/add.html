@@ -1,4 +1,4 @@
-{{template "header.html" .}}
+{{template "header.html" .Root}}
 {{if ne .Flash "" }}<h3>{{.Flash}}</h3><hr>{{end}}
 <h3>add things here</h3>
 <form method="post">
@@ -6,4 +6,4 @@ URL: <input type="text" name="url">
 Description: <input type="text" name="desc">
 <input type="submit" value="Submit">
 </form>
-{{template "footer.html" .}}
+{{template "footer.html" .Root}}
