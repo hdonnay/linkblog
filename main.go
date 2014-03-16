@@ -166,9 +166,9 @@ func main() {
 
 	s := http.NewServeMux()
 	s.Handle("/", http.HandlerFunc(index))
-	s.Handle("/hits/", http.HandlerFunc(hits))
-	s.Handle("/admin/add/", http.HandlerFunc(adminAdd))
-	s.Handle("/rss/", http.HandlerFunc(rss))
+	s.Handle("/hits", http.HandlerFunc(hits))
+	s.Handle("/admin/add", http.HandlerFunc(adminAdd))
+	s.Handle("/rss", http.HandlerFunc(rss))
 	s.Handle("/:/", http.StripPrefix("/:/", http.HandlerFunc(fetch)))
 	s.Handle("/s/", http.StripPrefix("/s/", http.FileServer(http.Dir(asset("static")))))
 
@@ -277,6 +277,10 @@ func hash(s string) string {
 }
 
 func index(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/" {
+		http.Redirect(w, r, path.Join(root, r.URL.Path), http.StatusMovedPermanently)
+		return
+	}
 	c := make(chan record, 10)
 	go func() {
 		rows, err := db.Query("SELECT time, hash, desc FROM links ORDER BY time DESC;")
