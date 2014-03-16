@@ -1,5 +1,6 @@
-{{template "header.html" .Root}}
+{{template "header.html" .Root}}{{$root := .Root}}
+<p>Here are links sorted by hits.</p><hr>
 <ul>
-{{range .Records}}<li>{{.Time.Format "2006-01-02"}}: <a href="/:/{{.Hash}}">{{.Desc}}</a> ({{.Hits}})</li>
+{{range .Records}}<li>{{.Time.Format "2006-01-02"}}: <a href="{{$root}}/:/{{.Hash}}">{{.Desc}}</a> ({{.Hits}})</li>
 {{end}}</ul>
 {{template "footer.html" .Root}}
