@@ -164,12 +164,12 @@ func main() {
 		log.Fatal(err)
 	}
 
-	http.Handle(path.Join(root, "/"), http.HandlerFunc(index))
-	http.Handle(path.Join(root, "/hits/"), http.HandlerFunc(hits))
-	http.Handle(path.Join(root, "/admin/add/"), http.HandlerFunc(adminAdd))
-	http.Handle(path.Join(root, "/rss/"), http.HandlerFunc(rss))
-	http.Handle(path.Join(root, "/:/"), http.StripPrefix("/:/", http.HandlerFunc(fetch)))
-	http.Handle(path.Join(root, "/s/"), http.StripPrefix("/s/", http.FileServer(http.Dir(asset("static")))))
+	http.Handle(path.Join(root, "/")+"/", http.HandlerFunc(index))
+	http.Handle(path.Join(root, "/hits")+"/", http.HandlerFunc(hits))
+	http.Handle(path.Join(root, "/admin/add")+"/", http.HandlerFunc(adminAdd))
+	http.Handle(path.Join(root, "/rss")+"/", http.HandlerFunc(rss))
+	http.Handle(path.Join(root, "/:")+"/", http.StripPrefix("/:/", http.HandlerFunc(fetch)))
+	http.Handle(path.Join(root, "/s")+"/", http.StripPrefix("/s/", http.FileServer(http.Dir(asset("static")))))
 
 	go func() {
 		log.Println("listening on " + *listen + ", serving at " + root)
