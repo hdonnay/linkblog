@@ -14,6 +14,7 @@ $violet:    #6c71c4;
 $blue:      #268bd2;
 $cyan:      #2aa198;
 $green:     #859900;
+$hrwidth:   90%;
 @mixin rebase($rebase03,$rebase02,$rebase01,$rebase00,$rebase0,$rebase1,$rebase2,$rebase3) {
 	background-color:$rebase03;
 	color:$rebase0;
@@ -39,15 +40,21 @@ html * {
 .blue{color: $blue;}
 .cyan{color: $cyan;}
 .green{color: $green;}
-.footer {
-	li {
-		display: inline;
-		font-size: small;
-	}
-}
+.right{float: right;}
+.left{float: left;}
+p, ul {margin: 1em ((100% - $hrwidth) / 2) 1em ((100% - $hrwidth) / 2);}
 hr {
-	width: 80%;
+	width: $hrwidth;
 	height: 1px;
 	background-color: $base2;
 	border: 0 none;
+}
+.header, .footer {
+	font-size: small;
+	text-align: center;
+	p {
+		display: inline;
+		margin-top: 0px;
+		margin-bottom: 0px;
+	}
 }

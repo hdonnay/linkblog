@@ -48,12 +48,25 @@ html * {
 .green {
   color: #859900; }
 
-.footer li {
-  display: inline;
-  font-size: small; }
+.right {
+  float: right; }
+
+.left {
+  float: left; }
+
+p, ul {
+  margin: 1em 5% 1em 5%; }
 
 hr {
-  width: 80%;
+  width: 90%;
   height: 1px;
   background-color: #eee8d5;
   border: 0 none; }
+
+.header, .footer {
+  font-size: small;
+  text-align: center; }
+  .header p, .footer p {
+    display: inline;
+    margin-top: 0px;
+    margin-bottom: 0px; }
