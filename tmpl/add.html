@@ -1,6 +1,6 @@
 {{template "header.html" .Root}}
-{{if ne .Flash "" }}<h3>{{.Flash}}</h3><hr>{{end}}
-<h3>add things here</h3>
+{{if ne .Flash "" }}<p><em>{{.Flash}}</em></p><hr>{{end}}
+<p>add things here</p>
 <form method="post">
 URL: <input type="text" name="url">
 Description: <input type="text" name="desc">
